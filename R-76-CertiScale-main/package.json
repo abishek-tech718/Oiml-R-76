@@ -1,0 +1,17 @@
+{
+  "name": "r76-certiscale-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "api": "npm --prefix backend run api",
+    "frontend": "node frontend/dev-server.js",
+    "migrate:db": "npm --prefix backend run migrate:db",
+    "test": "npm --prefix backend run test",
+    "test:rules": "npm --prefix backend run test:rules",
+    "test:engines": "npm --prefix backend run test:engines",
+    "test:workflow": "npm --prefix backend run test:workflow",
+    "test:environment": "npm --prefix backend run test:environment",
+    "test:repository": "npm --prefix backend run test:repository"
+  }
+}
