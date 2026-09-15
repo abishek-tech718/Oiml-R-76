@@ -1,0 +1,716 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>R76 CertiScale - NAWI Test Report System</title>
+    <meta name="description" content="OIML R76-1 based calculation layer for Non-Automatic Weighing Instruments (NAWI) model approval test reports." />
+    <meta property="og:title" content="R76 CertiScale - NAWI Test Report System" />
+    <meta property="og:description" content="OIML R76-1 based calculation layer for Non-Automatic Weighing Instruments (NAWI) model approval test reports." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="src/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Primary navigation">
+        <div class="brand-block">
+          <div class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3v18M3 9l9-6 9 6M6 12l-3 7h6l-3-7zM18 12l-3 7h6l-3-7z" />
+            </svg>
+          </div>
+          <div>
+            <p class="eyebrow">Legal Metrology</p>
+            <h1>CertiScale</h1>
+          </div>
+        </div>
+        <nav class="nav-list" aria-label="Main Navigation">
+          <div class="nav-section-title">Core Operations</div>
+          <button class="nav-item active" data-view="dashboard">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+            </span>
+            <span class="nav-label">Dashboard</span>
+          </button>
+          <button class="nav-item" data-view="workflow">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </span>
+            <span class="nav-label">Process Flow</span>
+          </button>
+          <button class="nav-item" data-view="case">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+            </span>
+            <span class="nav-label">Case Setup</span>
+          </button>
+          <button class="nav-item" data-view="tests">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2v7.31M14 2v7.31M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0"/></svg>
+            </span>
+            <span class="nav-label">Test Observations</span>
+          </button>
+
+          <div class="nav-section-title">Verification &amp; Audit</div>
+          <button class="nav-item" data-view="compliance">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+            </span>
+            <span class="nav-label">Compliance Check</span>
+          </button>
+          <button class="nav-item" data-view="rules">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </span>
+            <span class="nav-label">Rules Engine (Table 6)</span>
+          </button>
+          <button class="nav-item" data-view="review">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg>
+            </span>
+            <span class="nav-label">Review &amp; Gates</span>
+          </button>
+
+          <div class="nav-section-title">Records &amp; System</div>
+          <button class="nav-item" data-view="report">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            </span>
+            <span class="nav-label">Test Reports</span>
+          </button>
+          <button class="nav-item" data-view="repository">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+            </span>
+            <span class="nav-label">Repository</span>
+          </button>
+          <button class="nav-item" data-view="admin">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="3"/></svg>
+            </span>
+            <span class="nav-label">Admin Oversight</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-user-card" id="sidebarUserCard">
+          <div class="user-avatar-badge" id="sidebarRoleBadge">OP</div>
+          <div class="user-meta">
+            <strong id="sidebarUserName">Not signed in</strong>
+            <span id="sidebarUserRole">Select role</span>
+          </div>
+          <div class="sidebar-user-actions">
+            <button id="sidebarSwitchRoleBtn" class="btn-micro" title="Switch to another role">Switch</button>
+            <button id="sidebarLogoutBtn" class="btn-micro secondary" title="Exit workspace">Exit</button>
+          </div>
+        </div>
+
+        <div class="side-proof">
+          <div class="proof-indicator"><span class="pulse-emerald"></span>OIML R76-1:2006</div>
+          <p>Rules as data &bull; Results with mathematical explanation</p>
+        </div>
+      </aside>
+
+      <main id="main" class="main-panel">
+        <header class="topbar">
+          <div class="topbar-left">
+            <div class="breadcrumbs" id="topbarBreadcrumbs" aria-label="Breadcrumb">
+              <span class="breadcrumb-root">CertiScale</span>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-section" id="breadcrumbSection">Operations</span>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current" id="breadcrumbCurrent">Dashboard</span>
+            </div>
+            <h2 id="view-title">Dashboard</h2>
+          </div>
+          <div class="top-actions">
+            <div class="search-field" id="topbarSearchGroup" title="Press ⌘K or Ctrl+K to search">
+              <span class="sr-only">Search repository</span>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" class="search-icon" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input id="globalSearch" type="search" placeholder="Search cases or standards..." aria-label="Search repository" autocomplete="off" />
+              <kbd class="search-shortcut" title="Search shortcut">⌘K</kbd>
+            </div>
+            <button class="primary-action btn-topbar-action" id="generateReportBtn">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              Generate Report
+            </button>
+            <div class="session-chip" id="sessionChip"><span class="pulse-dot"></span>Not signed in</div>
+            <button class="secondary-action btn-topbar-action" id="topbarSwitchRoleBtn">Switch Role</button>
+            <button class="secondary-action btn-topbar-action" id="logoutBtn" hidden>Sign Out</button>
+          </div>
+        </header>
+
+        <!-- INTRO PAGE (CertiScale Intro) -->
+        <section class="view active" id="intro-view">
+          <div class="intro-shell">
+            <div class="intro-hero-card">
+              <div class="intro-badge">
+                <span class="badge-beacon"></span>
+                <span>OIML R76-1:2006 Certified NAWI Framework</span>
+              </div>
+              <h1 class="intro-headline">
+                CertiScale
+              </h1>
+              <p class="intro-subtitle">
+                Precision Legal Metrology Verification, Automated Error Tolerance Classification, and Audit-Traceable Model Approval Engine.
+              </p>
+
+              <div class="intro-cta-cluster">
+                <button class="intro-cta-primary" id="introStartBtn">
+                  <span>Choose Your Role &amp; Enter</span>
+                  <svg viewBox="0 0 20 20" fill="currentColor" class="cta-arrow"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                </button>
+                <button class="intro-cta-secondary" id="introWorkflowBtn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                  <span>Explore 9-Stage Process</span>
+                </button>
+              </div>
+
+              <div class="intro-metrics-row">
+                <div class="intro-metric-tile">
+                  <div class="tile-val">Table 6</div>
+                  <div class="tile-label">Automated MPE Lookup</div>
+                  <div class="tile-desc">Bands ±0.5e, ±1.0e, ±1.5e for Classes I, II, III &amp; IIII</div>
+                </div>
+                <div class="intro-metric-tile">
+                  <div class="tile-val">&Delta;L &amp; Ec</div>
+                  <div class="tile-label">Mathematical Rounding</div>
+                  <div class="tile-desc">Full turning-point resolution (P = I + 0.5e - &Delta;L)</div>
+                </div>
+                <div class="intro-metric-tile">
+                  <div class="tile-val">5-Tier</div>
+                  <div class="tile-label">Role-Based Workflow</div>
+                  <div class="tile-desc">Technician &rarr; Supervisor &rarr; Reviewer &rarr; Director</div>
+                </div>
+                <div class="intro-metric-tile">
+                  <div class="tile-val">SHA-256</div>
+                  <div class="tile-label">Cryptographic Integrity</div>
+                  <div class="tile-desc">Tamper-evident verification hash &amp; PDF export</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="intro-features-grid">
+              <div class="feature-card">
+                <div class="feature-icon">⚖️</div>
+                <h3>Standardized Test Suite</h3>
+                <p>Execute accredited Weighing, Tare, Eccentricity, Repeatability, and Discrimination tests according to international NAWI requirements.</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">🌡️</div>
+                <h3>Environmental Readiness Gates</h3>
+                <p>Enforces lab temperature gradients, relative humidity thresholds, and barometric limits before observation commitment.</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">🛡️</div>
+                <h3>Legal Consequence Control</h3>
+                <p>Guards against unverified test data with mandatory checklists and supervisor clearance before director sign-off.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ROLE SELECTION PAGE (Choose Your Role) -->
+        <section class="view" id="login-view">
+          <div class="role-selection-wrapper">
+            <div class="role-nav-header">
+              <button id="backToIntroBtn" class="back-link">
+                <svg viewBox="0 0 20 20" fill="currentColor" class="arrow-back"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/></svg>
+                <span>Back to CertiScale Intro</span>
+              </button>
+              <div class="role-header-content">
+                <div class="section-tag">Workspace Access</div>
+                <h2 class="role-main-heading">Choose Your Role</h2>
+                <p class="role-subheading">Select your operational persona to enter your designated workspace. CertiScale adapts permissions and views according to your duties.</p>
+              </div>
+            </div>
+
+            <div class="role-grid" id="roleSelector">
+              <button class="role-card-modern" data-role-select="technician">
+                <div class="role-card-header">
+                  <div class="role-tag tag-blue">Laboratory &amp; Field</div>
+                  <span class="role-arrow">&rarr;</span>
+                </div>
+                <div class="role-card-main">
+                  <div class="role-icon-box blue">🔬</div>
+                  <h3>Technician</h3>
+                  <p>Register new instrument cases, verify test-time environmental readiness, record load observations, and submit evidence.</p>
+                </div>
+                <div class="role-card-scope">
+                  <span>Scope: Case Setup, Environment, Test Observations, Compliance</span>
+                </div>
+              </button>
+
+              <button class="role-card-modern" data-role-select="lab_supervisor">
+                <div class="role-card-header">
+                  <div class="role-tag tag-teal">Quality Assurance</div>
+                  <span class="role-arrow">&rarr;</span>
+                </div>
+                <div class="role-card-main">
+                  <div class="role-icon-box teal">📋</div>
+                  <h3>Lab Supervisor</h3>
+                  <p>Inspect submitted technician cases, verify observation completeness, check measurement trails, and release to metrology review.</p>
+                </div>
+                <div class="role-card-scope">
+                  <span>Scope: Supervisor Queue, Case Verification, Compliance</span>
+                </div>
+              </button>
+
+              <button class="role-card-modern" data-role-select="reviewer">
+                <div class="role-card-header">
+                  <div class="role-tag tag-purple">Metrology Officer</div>
+                  <span class="role-arrow">&rarr;</span>
+                </div>
+                <div class="role-card-main">
+                  <div class="role-icon-box purple">⚖️</div>
+                  <h3>Reviewer / Approver</h3>
+                  <p>Audit mathematical error calculation trails, verify OIML Table 6 MPE bands, and check mandatory test checklists.</p>
+                </div>
+                <div class="role-card-scope">
+                  <span>Scope: Technical Review, Calculation Trail, Repository</span>
+                </div>
+              </button>
+
+              <button class="role-card-modern" data-role-select="director">
+                <div class="role-card-header">
+                  <div class="role-tag tag-emerald">Executive Authority</div>
+                  <span class="role-arrow">&rarr;</span>
+                </div>
+                <div class="role-card-main">
+                  <div class="role-icon-box emerald">🏛️</div>
+                  <h3>Director</h3>
+                  <p>Grant formal model approval, authorize legal certificate issuance, and generate official stamped PDF / DOCX evaluation reports.</p>
+                </div>
+                <div class="role-card-scope">
+                  <span>Scope: Approval Gate, Formal Report Issuance, Export</span>
+                </div>
+              </button>
+
+              <button class="role-card-modern" data-role-select="admin">
+                <div class="role-card-header">
+                  <div class="role-tag tag-amber">System Oversight</div>
+                  <span class="role-arrow">&rarr;</span>
+                </div>
+                <div class="role-card-main">
+                  <div class="role-icon-box amber">🛡️</div>
+                  <h3>Administrator</h3>
+                  <p>System-wide operational oversight, versioned OIML tolerance rule management, user role approvals, and audit log inspection.</p>
+                </div>
+                <div class="role-card-scope">
+                  <span>Scope: Global Oversight, Rules Master, Access Control</span>
+                </div>
+              </button>
+            </div>
+
+            <div class="auth-status" id="authStatus" aria-live="polite"></div>
+          </div>
+        </section>
+
+        <!-- DASHBOARD VIEW -->
+        <section class="view" id="dashboard-view">
+          <div class="hero-band">
+            <div>
+              <p class="eyebrow" id="workspaceEyebrow">Operations Overview</p>
+              <h3 id="workspaceTitle">NAWI model approval test reports with traceable OIML R76 logic.</h3>
+              <p id="workspaceDescription">Built for laboratories that need fewer manual calculations and a clear audit trail.</p>
+            </div>
+            <div class="hero-status" id="workspaceStatus">
+              <span class="status-pill pass">Active System</span>
+              <span class="status-pill neutral">Rule Set: R76-1:2006</span>
+            </div>
+          </div>
+
+          <div class="metric-grid" id="metricGrid"></div>
+
+          <section class="panel role-queue-panel" id="roleQueuePanel">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow" id="roleQueueEyebrow">Case Queue</p>
+                <h3 id="roleQueueTitle">Assigned Cases</h3>
+              </div>
+              <button class="primary-action" id="startCaseBtn" hidden>Start New Case</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Case</th><th>Instrument</th><th>Manufacturer</th><th>Status</th><th>Applicable tests</th><th>Action</th></tr></thead>
+                <tbody id="roleQueueRows"></tbody>
+              </table>
+            </div>
+            <div class="auth-status" id="roleQueueStatus" aria-live="polite"></div>
+          </section>
+
+          <div class="two-column">
+            <section class="panel">
+              <div class="section-head">
+                <div>
+                  <p class="eyebrow">Testing Progress</p>
+                  <h3>Observation Breakdown</h3>
+                </div>
+              </div>
+              <div class="bar-list" id="testTypeBars"></div>
+            </section>
+            <section class="panel">
+              <div class="section-head">
+                <div>
+                  <p class="eyebrow">Validation</p>
+                  <h3>Data Quality Flags</h3>
+                </div>
+              </div>
+              <div id="qualityFlags"></div>
+            </section>
+          </div>
+        </section>
+
+        <!-- WORKFLOW VIEW -->
+        <section class="view" id="workflow-view">
+          <section class="panel">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">End-To-End Flow</p>
+                <h3>How The System Works</h3>
+              </div>
+              <span class="status-pill neutral">9 stage process</span>
+            </div>
+            <div class="workflow-grid" id="workflowSteps"></div>
+          </section>
+        </section>
+
+        <!-- CASE SETUP VIEW -->
+        <section class="view" id="case-view">
+          <div class="form-layout">
+            <section class="panel">
+              <p class="eyebrow">Case Record</p>
+              <h3>Create Instrument Case</h3>
+              <div class="form-grid">
+                <label>Case ID <input id="caseId" value="CASE-NAWI-2026-001" /></label>
+                <label>Manufacturer <input id="caseManufacturer" /></label>
+                <label>Manufacturer Address <input id="caseManufacturerAddress" /></label>
+                <label>Model <input id="caseModel" /></label>
+                <label>Accuracy Class
+                  <select id="caseClass">
+                    <option>I</option>
+                    <option>II</option>
+                    <option selected>III</option>
+                    <option>IIII</option>
+                  </select>
+                </label>
+                <label>Max Capacity <input id="caseMax" /></label>
+                <label>Min Capacity <input id="caseMin" /></label>
+                <label>Verification Scale Interval e <input id="caseE" /></label>
+                <label>Actual Scale Interval d <input id="caseD" value="5 g" /></label>
+                <label>Instrument Type
+                  <select id="caseElectronic"><option value="true">Electronic</option><option value="false">Mechanical</option></select>
+                </label>
+                <label>Declared Features <input id="caseFeatures" placeholder="tare, zero_tracking" /></label>
+              </div>
+              <p class="helper-note">The value e is the verification scale interval used by OIML R76 for classification and MPE lookup.</p>
+              <button class="primary-action full-width" id="createCaseBtn">Create Case</button>
+              <div class="auth-status" id="caseCreationStatus" aria-live="polite"></div>
+              <div class="attachment-box">
+                <strong>Attachments</strong>
+                <span>Instrument photo, name plate image, calibration certificate copies, and supporting documents can be attached to the case.</span>
+              </div>
+            </section>
+            <section class="panel">
+              <p class="eyebrow">Lab Conditions</p>
+              <h3>Environment Capture</h3>
+              <div class="form-grid single">
+                <label>Laboratory <input id="labName" value="Legal Metrology Test Lab, Chennai" /></label>
+                <label>Temperature At Test Time <input id="labTemp" type="number" step="0.1" value="22.8" /></label>
+                <label>Humidity At Test Time <input id="labHumidity" type="number" step="0.1" value="53.2" /></label>
+                <label>Atmospheric Pressure <input id="labPressure" type="number" step="0.1" value="1012.4" /></label>
+                <label>Operator <input id="labOperator" value="A. Kumar" /></label>
+              </div>
+              <button class="secondary-action full-width" id="captureEnvironmentBtn">Capture Test-Time Environment</button>
+              <div class="environment-capture" id="environmentCapture"></div>
+            </section>
+          </div>
+        </section>
+
+        <!-- TESTS VIEW -->
+        <section class="view" id="tests-view">
+          <section class="panel">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Observation Capture</p>
+                <h3>Live Test Entry And Imported Observations</h3>
+              </div>
+              <select id="instrumentFilter" aria-label="Filter by instrument"></select>
+            </div>
+            <div class="live-entry-grid">
+              <div>
+                <p class="eyebrow">Manual Reading From Weighing Machine</p>
+                <div class="form-grid single">
+                  <label>Case
+                    <select id="observationCaseSelect"><option value="">Select a technician case</option></select>
+                  </label>
+                </div>
+                <div class="environment-gate" id="observationEnvironmentGate">
+                  <strong>Environmental readiness required</strong>
+                  <p>Choose a case and test type, then record current laboratory conditions.</p>
+                  <div class="form-grid">
+                    <label>Temperature C <input id="observationTemperature" type="number" step="0.1" value="22.0" /></label>
+                    <label>Humidity %RH <input id="observationHumidity" type="number" step="0.1" value="50.0" /></label>
+                    <label>Pressure hPa <input id="observationPressure" type="number" step="0.1" value="1013.0" /></label>
+                  </div>
+                  <button class="secondary-action" id="recordConditionsBtn">Record Conditions</button>
+                  <div class="auth-status" id="observationReadinessStatus" aria-live="polite"></div>
+                </div>
+                <div id="observationEntryGate" hidden>
+                  <div class="form-grid">
+                    <label>Test Type
+                      <select id="liveTestType">
+                        <option>Weighing Test - Increasing Load</option>
+                        <option>Weighing Test - Decreasing Load</option>
+                        <option>Eccentricity Test</option>
+                        <option>Repeatability Test</option>
+                        <option>Discrimination Test</option>
+                      </select>
+                    </label>
+                    <label>Load Position <input id="liveLoadPosition" value="Center" /></label>
+                    <label>Reference Mass <input id="liveReferenceMass" type="number" step="0.001" value="15000" /></label>
+                    <label>Indicated Reading <input id="liveIndicatedValue" type="number" step="0.001" value="15010" /></label>
+                  </div>
+                  <div class="approval-actions">
+                    <button class="primary-action" id="calculateLiveBtn">Calculate Pass/Fail</button>
+                    <button class="secondary-action" id="saveLiveBtn">Save Observation</button>
+                  </div>
+                </div>
+              </div>
+              <div class="live-result" id="liveResult">
+                <strong>Ready for calculation</strong>
+                <span>Enter load and indicated value, then calculate.</span>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Obs ID</th>
+                    <th>Test</th>
+                    <th>Reference</th>
+                    <th>Indicated</th>
+                    <th>Error</th>
+                    <th>MPE</th>
+                    <th>Result</th>
+                    <th>Test Time Env</th>
+                  </tr>
+                </thead>
+                <tbody id="observationRows"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <!-- COMPLIANCE VIEW -->
+        <section class="view" id="compliance-view">
+          <section class="panel case-compliance-panel">
+            <div class="section-head"><div><p class="eyebrow">Case Compliance</p><h3>Live Case Results</h3></div></div>
+            <div class="table-wrap"><table><thead><tr><th>Test</th><th>Applied load</th><th>Indicated reading</th><th>Error</th><th>MPE</th><th>Result</th><th>Rule band</th></tr></thead><tbody id="caseComplianceRows"></tbody></table></div>
+          </section>
+          <section class="panel">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Live Verification</p>
+                <h3>Compliance Results Panel</h3>
+              </div>
+              <span class="status-pill neutral">error &le; mpe</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Obs ID</th>
+                    <th>Class</th>
+                    <th>e</th>
+                    <th>Load Band</th>
+                    <th>Error</th>
+                    <th>MPE</th>
+                    <th>Verdict</th>
+                    <th>Validation</th>
+                  </tr>
+                </thead>
+                <tbody id="complianceRows"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <!-- RULES VIEW -->
+        <section class="view" id="rules-view">
+          <div class="two-column">
+            <section class="panel">
+              <p class="eyebrow">Compliance Logic</p>
+              <h3>Explainable Rules Engine</h3>
+              <div id="ruleExplanation"></div>
+            </section>
+            <section class="panel">
+              <p class="eyebrow">OIML R76 Table 6</p>
+              <h3>MPE Lookup Bands</h3>
+              <div class="rule-table" id="mpeTable"></div>
+            </section>
+          </div>
+        </section>
+
+        <!-- REVIEW VIEW -->
+        <section class="view" id="review-view">
+          <div class="two-column">
+            <section class="panel">
+              <p class="eyebrow">Reviewer Gate</p>
+              <h3>Mandatory Test Checklist</h3>
+              <div class="check-list" id="reviewChecklist"></div>
+            </section>
+            <section class="panel">
+              <p class="eyebrow">Legal Consequence Control</p>
+              <h3>Approval Decision</h3>
+              <div id="approvalGate"></div>
+            </section>
+          </div>
+        </section>
+
+        <!-- REPORT VIEW -->
+        <section class="view" id="report-view">
+          <section class="report-sheet" id="reportSheet">
+            <div class="report-head">
+              <div>
+                <p class="eyebrow">Generated Test Report</p>
+                <h3>Non-Automatic Weighing Instrument Type Evaluation</h3>
+              </div>
+              <span class="status-pill pass" id="reportVerdict">PASS</span>
+            </div>
+            <div id="reportBody"></div>
+            <div class="report-actions">
+              <button class="primary-action" id="exportPdfBtn">Export PDF</button>
+              <button class="secondary-action" id="exportDocxBtn">Export DOCX</button>
+              <button class="secondary-action" id="createQrBtn">Create QR Verification</button>
+            </div>
+            <div class="export-status" id="exportStatus"></div>
+          </section>
+        </section>
+
+        <!-- REPOSITORY VIEW -->
+        <section class="view" id="repository-view">
+          <section class="panel repository-panel">
+            <div class="section-head repository-head">
+              <div>
+                <p class="eyebrow">Finalised Cases</p>
+                <h3>Test Report Repository</h3>
+              </div>
+              <span class="status-pill neutral" id="repositoryCaseCount">0 cases</span>
+            </div>
+            <div class="repository-filters" aria-label="Repository filters">
+              <label>Manufacturer<input id="repoManufacturer" type="search" placeholder="Search manufacturer..." autocomplete="off" /></label>
+              <label>Model<input id="repoModel" type="search" placeholder="Search model..." autocomplete="off" /></label>
+              <label>From Date<input id="repoDateFrom" type="date" /></label>
+              <label>To Date<input id="repoDateTo" type="date" /></label>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Case</th><th>Manufacturer</th><th>Model</th><th>Created</th><th>Final status</th><th></th></tr></thead>
+                <tbody id="finalRepositoryRows"></tbody>
+              </table>
+            </div>
+          </section>
+          <section class="panel repository-detail" id="repositoryDetailPanel" hidden>
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Calculation Trail</p>
+                <h3 id="repositoryDetailTitle">Case details</h3>
+              </div>
+              <button class="secondary-action" id="closeRepositoryDetailBtn">Close</button>
+            </div>
+            <div id="repositoryDetailSummary"></div>
+            <div class="repository-trail" id="repositoryTrail"></div>
+          </section>
+          <section class="panel">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Reference Register</p>
+                <h3>Approval Register</h3>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Issue Date</th>
+                    <th>Company</th>
+                    <th>Equipment</th>
+                    <th>Certificate</th>
+                    <th>Application</th>
+                  </tr>
+                </thead>
+                <tbody id="repositoryRows"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <!-- ADMIN VIEW -->
+        <section class="view" id="admin-view">
+          <section class="panel approval-panel" id="pendingApprovalsPanel" hidden>
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Access Governance</p>
+                <h3>Pending Approvals</h3>
+              </div>
+              <span class="status-pill warn" id="pendingApprovalCount">0 awaiting review</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Name</th><th>Email</th><th>Organization</th><th>Requested role</th><th>Submitted</th><th>Decision</th></tr></thead>
+                <tbody id="pendingApprovalRows"></tbody>
+              </table>
+            </div>
+            <div class="auth-status" id="approvalStatus" aria-live="polite"></div>
+          </section>
+          <section class="panel admin-repository-panel" id="adminRepositoryPanel" hidden>
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Admin Oversight</p>
+                <h3>Final Case Repository</h3>
+              </div>
+              <button class="secondary-action" id="openRepositoryBtn">Open repository</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Case</th><th>Instrument</th><th>Created</th><th>Final status</th><th></th></tr></thead>
+                <tbody id="adminRepositoryRows"></tbody>
+              </table>
+            </div>
+          </section>
+          <div class="two-column">
+            <section class="panel">
+              <p class="eyebrow">Admin Panel</p>
+              <h3>Versioned Tolerance Rules</h3>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Rule ID</th>
+                      <th>Version</th>
+                      <th>Class</th>
+                      <th>Min e</th>
+                      <th>Max e</th>
+                      <th>MPE</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adminRules"></tbody>
+                </table>
+              </div>
+            </section>
+            <section class="panel">
+              <p class="eyebrow">Audit Log</p>
+              <h3>Traceable Activity</h3>
+              <div class="audit-list" id="auditTimeline"></div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="src/app.js"></script>
+  </body>
+</html>
+

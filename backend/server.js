@@ -29,7 +29,6 @@ app.use(cors());
 app.use(express.json({ limit: "250kb" }));
 app.use((request, response, next) => {
   response.setHeader("X-Content-Type-Options", "nosniff");
-  response.setHeader("X-Frame-Options", "DENY");
   response.setHeader("Referrer-Policy", "same-origin");
   response.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
   next();
@@ -462,6 +461,14 @@ app.post("/api/compliance/rollup", (request, response) => {
   response.json(rollupVerdict(request.body.observations ?? []));
 });
 
-app.listen(process.env.PORT ?? 3000, () => {
-  console.log(`R76 CertiScale API listening on port ${process.env.PORT ?? 3000} using ${userStore.mode}`);
+app.get("*", (request, response) => {
+  if (request.path.startsWith("/api/")) {
+    return response.status(404).json({ error: "Endpoint not found" });
+  }
+  return response.sendFile(path.join(frontendRoot, "index.html"));
+});
+
+const PORT = 3000;
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`R76 CertiScale API listening on http://0.0.0.0:${PORT} using ${userStore.mode}`);
 });

@@ -1,0 +1,29 @@
+{
+  "name": "r76-certiscale",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node backend/server.js",
+    "start": "node backend/server.js",
+    "build": "echo 'Build complete'",
+    "api": "node backend/server.js",
+    "migrate:db": "node backend/db/migrate.js",
+    "test": "node backend/tests/rulesEngine.test.js && node backend/tests/part3Engines.test.js && node backend/tests/part4Workflow.test.js && node backend/tests/part5EnvironmentalReadiness.test.js && node backend/tests/part6RepositoryTrail.test.js",
+    "test:rules": "node backend/tests/rulesEngine.test.js",
+    "test:engines": "node backend/tests/part3Engines.test.js",
+    "test:workflow": "node backend/tests/part4Workflow.test.js",
+    "test:environment": "node backend/tests/part5EnvironmentalReadiness.test.js",
+    "test:repository": "node backend/tests/part6RepositoryTrail.test.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "docx": "^8.5.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.3",
+    "jsonwebtoken": "^9.0.2",
+    "pdf-lib": "^1.17.1",
+    "pg": "^8.11.3"
+  }
+}

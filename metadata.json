@@ -1,0 +1,6 @@
+{
+  "name": "R76 CertiScale - NAWI Test Report System",
+  "description": "OIML R76-1 based calculation layer for Non-Automatic Weighing Instruments (NAWI) model approval test reports.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -16,17 +16,33 @@ const state = {
 };
 
 const titles = {
+  intro: "Welcome to CertiScale",
   login: "Choose Role",
-  workflow: "Process",
+  workflow: "Process Flow",
   dashboard: "Dashboard",
   case: "Case Setup",
-  compliance: "Compliance Results",
+  compliance: "Compliance Check",
   tests: "Test Observations",
-  rules: "Rules Engine",
-  review: "Review And Approval",
-  report: "Reports",
+  rules: "Rules Engine (Table 6)",
+  review: "Review & Gates",
+  report: "Test Reports",
   repository: "Repository",
-  admin: "Admin",
+  admin: "Admin Oversight",
+};
+
+const viewCategories = {
+  dashboard: { section: "Operations", name: "Dashboard" },
+  workflow: { section: "Operations", name: "Process Flow" },
+  case: { section: "Operations", name: "Case Setup" },
+  tests: { section: "Operations", name: "Test Observations" },
+  compliance: { section: "Verification", name: "Compliance Check" },
+  rules: { section: "Verification", name: "Rules Engine (Table 6)" },
+  review: { section: "Verification", name: "Review & Gates" },
+  report: { section: "Records", name: "Test Reports" },
+  repository: { section: "Records", name: "Repository" },
+  admin: { section: "Governance", name: "Admin Oversight" },
+  intro: { section: "Overview", name: "Welcome" },
+  login: { section: "Access", name: "Choose Role" },
 };
 
 const dom = {
@@ -58,9 +74,19 @@ const dom = {
   reportBody: document.querySelector("#reportBody"),
   reportVerdict: document.querySelector("#reportVerdict"),
   globalSearch: document.querySelector("#globalSearch"),
+  globalSearchBtn: document.querySelector("#globalSearchBtn"),
   generateReportBtn: document.querySelector("#generateReportBtn"),
   sessionChip: document.querySelector("#sessionChip"),
   logoutBtn: document.querySelector("#logoutBtn"),
+  topbarSwitchRoleBtn: document.querySelector("#topbarSwitchRoleBtn"),
+  sidebarSwitchRoleBtn: document.querySelector("#sidebarSwitchRoleBtn"),
+  sidebarLogoutBtn: document.querySelector("#sidebarLogoutBtn"),
+  sidebarUserName: document.querySelector("#sidebarUserName"),
+  sidebarUserRole: document.querySelector("#sidebarUserRole"),
+  sidebarRoleBadge: document.querySelector("#sidebarRoleBadge"),
+  introStartBtn: document.querySelector("#introStartBtn"),
+  introWorkflowBtn: document.querySelector("#introWorkflowBtn"),
+  backToIntroBtn: document.querySelector("#backToIntroBtn"),
   workflowSteps: document.querySelector("#workflowSteps"),
   complianceRows: document.querySelector("#complianceRows"),
   auditTimeline: document.querySelector("#auditTimeline"),
@@ -151,7 +177,7 @@ async function init() {
   setupRepository();
   fillCaseForm(state.observations[0]);
   renderAll();
-  showView(state.currentUser ? "dashboard" : "login");
+  showView(state.currentUser ? "dashboard" : "intro");
 }
 
 async function restoreSession() {
@@ -172,17 +198,27 @@ async function restoreSession() {
 
 function setupAuth() {
   renderAuthStatus();
-  dom.logoutBtn.addEventListener("click", () => {
+
+  function handleLogout() {
     state.authToken = "";
     state.currentUser = null;
     localStorage.removeItem("r76-auth-token");
     localStorage.removeItem("r76-current-user");
     renderAuthStatus();
     renderAdmin();
-    showView("login");
-  });
+    showView("intro");
+  }
 
-  dom.roleSelector.querySelectorAll("button[data-role-select]").forEach((button) => button.addEventListener("click", async () => {
+  dom.logoutBtn?.addEventListener("click", handleLogout);
+  dom.sidebarLogoutBtn?.addEventListener("click", handleLogout);
+
+  dom.introStartBtn?.addEventListener("click", () => showView("login"));
+  dom.introWorkflowBtn?.addEventListener("click", () => showView("workflow"));
+  dom.backToIntroBtn?.addEventListener("click", () => showView("intro"));
+  dom.topbarSwitchRoleBtn?.addEventListener("click", () => showView("login"));
+  dom.sidebarSwitchRoleBtn?.addEventListener("click", () => showView("login"));
+
+  dom.roleSelector?.querySelectorAll("button[data-role-select]").forEach((button) => button.addEventListener("click", async () => {
     try {
       const response = await fetch("/api/auth/select-role", {
         method: "POST",
@@ -429,7 +465,7 @@ function setupNavigation() {
 
 const roleWorkspaces = {
   Technician: {
-    views: ["login", "dashboard", "case", "tests", "compliance"],
+    views: ["dashboard", "workflow", "case", "tests", "compliance"],
     eyebrow: "Technician Workspace",
     title: "Prepare instruments, confirm test conditions, and record compliant readings.",
     description: "Start a new NAWI case, capture laboratory conditions, and move complete evidence to supervisor check.",
@@ -437,7 +473,7 @@ const roleWorkspaces = {
     status: "Testing responsibility",
   },
   "Lab Supervisor": {
-    views: ["login", "dashboard", "compliance"],
+    views: ["dashboard", "workflow", "compliance"],
     eyebrow: "Laboratory Supervision",
     title: "Verify that test evidence is complete before technical review.",
     description: "Check submitted cases, confirm the measurement trail, and release sound work to the reviewer.",
@@ -445,7 +481,7 @@ const roleWorkspaces = {
     status: "Verification responsibility",
   },
   "Reviewer / Approver": {
-    views: ["login", "dashboard", "compliance", "review", "repository"],
+    views: ["dashboard", "workflow", "compliance", "review", "repository"],
     eyebrow: "Compliance Review",
     title: "Review the calculation trail and compliance evidence for each case.",
     description: "Inspect MPE decisions, environmental readiness, and test completeness before director approval.",
@@ -453,7 +489,7 @@ const roleWorkspaces = {
     status: "Review responsibility",
   },
   Director: {
-    views: ["login", "dashboard", "repository", "report"],
+    views: ["dashboard", "workflow", "repository", "report"],
     eyebrow: "Director Approval",
     title: "Approve complete NAWI cases and issue controlled test reports.",
     description: "Review the final evidence trail, provide director approval, and generate the formal PDF or DOCX report.",
@@ -461,7 +497,7 @@ const roleWorkspaces = {
     status: "Approval responsibility",
   },
   Admin: {
-    views: ["login", "dashboard", "repository", "rules", "admin"],
+    views: ["dashboard", "workflow", "repository", "rules", "admin"],
     eyebrow: "System Oversight",
     title: "Monitor every NAWI case, rule set, report, and access request.",
     description: "Use this read-only operational view to track workflow health and administer the system.",
@@ -472,7 +508,7 @@ const roleWorkspaces = {
 
 function renderRoleWorkspace() {
   const workspace = roleWorkspaces[state.currentUser?.role];
-  const allowedViews = workspace?.views ?? ["login"];
+  const allowedViews = workspace?.views ?? [];
   document.body.className = document.body.className.replace(/\brole-[\w-]+\b/g, "").trim();
   if (state.currentUser) document.body.classList.add(`role-${state.currentUser.role.toLowerCase().replaceAll(/[^a-z]+/g, "-")}`);
   dom.navItems.forEach((item) => { item.hidden = !allowedViews.includes(item.dataset.view); });
@@ -485,21 +521,68 @@ function renderRoleWorkspace() {
 }
 
 function setupRepository() {
-  dom.repoSearchBtn.addEventListener("click", loadFinalRepository);
+  let debounceTimer = null;
+  const liveFilter = () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      loadFinalRepository();
+    }, 200);
+  };
+
+  dom.repoSearchBtn?.addEventListener("click", loadFinalRepository);
+  [dom.repoManufacturer, dom.repoModel].forEach((input) => {
+    input?.addEventListener("input", liveFilter);
+  });
+  [dom.repoDateFrom, dom.repoDateTo].forEach((input) => {
+    input?.addEventListener("change", liveFilter);
+  });
   [dom.repoManufacturer, dom.repoModel, dom.repoDateFrom, dom.repoDateTo].forEach((input) => {
-    input.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") loadFinalRepository();
+    input?.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        clearTimeout(debounceTimer);
+        loadFinalRepository();
+      }
     });
   });
-  dom.closeRepositoryDetailBtn.addEventListener("click", () => { dom.repositoryDetailPanel.hidden = true; });
-  dom.openRepositoryBtn.addEventListener("click", () => showView("repository"));
+  dom.closeRepositoryDetailBtn?.addEventListener("click", () => { dom.repositoryDetailPanel.hidden = true; });
+  dom.openRepositoryBtn?.addEventListener("click", () => showView("repository"));
 }
 
 function setupSearch() {
-  dom.globalSearch.addEventListener("input", (event) => {
-    state.search = event.target.value.trim().toLowerCase();
+  let searchDebounce = null;
+  const triggerSearch = () => {
+    state.search = dom.globalSearch.value.trim().toLowerCase();
     renderRepository();
+    showView("repository");
+  };
+
+  dom.globalSearch?.addEventListener("input", (event) => {
+    state.search = event.target.value.trim().toLowerCase();
+    clearTimeout(searchDebounce);
+    searchDebounce = setTimeout(() => {
+      renderRepository();
+    }, 150);
   });
+
+  dom.globalSearch?.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      clearTimeout(searchDebounce);
+      triggerSearch();
+    } else if (event.key === "Escape") {
+      dom.globalSearch.blur();
+    }
+  });
+
+  window.addEventListener("keydown", (event) => {
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+      event.preventDefault();
+      dom.globalSearch?.focus();
+      dom.globalSearch?.select();
+    }
+  });
+
+  dom.globalSearchBtn?.addEventListener("click", triggerSearch);
 }
 
 function setupInstrumentFilter() {
@@ -519,10 +602,20 @@ function setupInstrumentFilter() {
 
 function showView(view) {
   document.querySelectorAll(".view").forEach((section) => section.classList.remove("active"));
-  document.querySelector(`#${view}-view`).classList.add("active");
+  const target = document.querySelector(`#${view}-view`);
+  if (target) target.classList.add("active");
   dom.navItems.forEach((item) => item.classList.toggle("active", item.dataset.view === view));
-  dom.title.textContent = titles[view];
-  document.body.classList.toggle("auth-only", !state.currentUser);
+  dom.title.textContent = titles[view] ?? "CertiScale";
+
+  const breadcrumbSection = document.querySelector("#breadcrumbSection");
+  const breadcrumbCurrent = document.querySelector("#breadcrumbCurrent");
+  const info = viewCategories[view] || { section: "Operations", name: titles[view] ?? "CertiScale" };
+  if (breadcrumbSection) breadcrumbSection.textContent = info.section;
+  if (breadcrumbCurrent) breadcrumbCurrent.textContent = info.name;
+
+  const isAuth = !state.currentUser || view === "intro" || view === "login";
+  document.body.classList.toggle("auth-only", isAuth);
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function renderAll() {
@@ -655,27 +748,48 @@ function escapeHtml(value) {
 }
 
 function renderAuthStatus() {
-  if (!dom.authStatus) return;
-  document.body.classList.toggle("auth-only", !state.currentUser);
   if (!state.currentUser) {
-    dom.sessionChip.textContent = "Choose a role";
-    dom.logoutBtn.hidden = true;
-    dom.authStatus.innerHTML = `
-      <div class="quality-card warn">
-        <strong>No role selected</strong>
-        <p>Choose the workspace role that matches the next workflow step.</p>
-      </div>
-    `;
+    if (dom.sessionChip) dom.sessionChip.innerHTML = '<span class="status-indicator-dot idle"></span>Not signed in';
+    if (dom.logoutBtn) dom.logoutBtn.hidden = true;
+    if (dom.topbarSwitchRoleBtn) dom.topbarSwitchRoleBtn.hidden = true;
+    if (dom.sidebarUserName) dom.sidebarUserName.textContent = "Not signed in";
+    if (dom.sidebarUserRole) dom.sidebarUserRole.textContent = "No role selected";
+    if (dom.sidebarRoleBadge) dom.sidebarRoleBadge.textContent = "--";
+    if (dom.authStatus) {
+      dom.authStatus.innerHTML = `
+        <div class="quality-card warn">
+          <strong>No role selected</strong>
+          <p>Select your operational persona above to enter your dedicated workflow workspace.</p>
+        </div>
+      `;
+    }
     return;
   }
-  dom.sessionChip.textContent = `${state.currentUser.name} - ${state.currentUser.role}`;
-  dom.logoutBtn.hidden = false;
-  dom.authStatus.innerHTML = `
-    <div class="quality-card ok">
-      <strong>Current role: ${state.currentUser.role}</strong>
-      <p>${state.currentUser.name} selected at ${state.currentUser.signedInAt}</p>
-    </div>
-  `;
+
+  const roleInitials = {
+    "Technician": "TC",
+    "Lab Supervisor": "LS",
+    "Reviewer / Approver": "RV",
+    "Director": "DR",
+    "Admin": "AD",
+  }[state.currentUser.role] ?? "OP";
+
+  if (dom.sessionChip) {
+    dom.sessionChip.innerHTML = `<span class="status-indicator-dot active"></span><span>${escapeHtml(state.currentUser.name)}</span><span class="session-chip-divider">&bull;</span><strong class="session-chip-badge">${escapeHtml(state.currentUser.role)}</strong>`;
+  }
+  if (dom.logoutBtn) dom.logoutBtn.hidden = false;
+  if (dom.topbarSwitchRoleBtn) dom.topbarSwitchRoleBtn.hidden = false;
+  if (dom.sidebarUserName) dom.sidebarUserName.textContent = state.currentUser.name;
+  if (dom.sidebarUserRole) dom.sidebarUserRole.textContent = state.currentUser.role;
+  if (dom.sidebarRoleBadge) dom.sidebarRoleBadge.textContent = roleInitials;
+  if (dom.authStatus) {
+    dom.authStatus.innerHTML = `
+      <div class="quality-card ok">
+        <strong>Current role: ${escapeHtml(state.currentUser.role)}</strong>
+        <p>${escapeHtml(state.currentUser.name)} active since ${escapeHtml(state.currentUser.signedInAt)}</p>
+      </div>
+    `;
+  }
 }
 
 function readEnvironment() {
@@ -756,18 +870,73 @@ function calculateLiveObservation() {
 }
 
 function renderLiveResult() {
-  if (!state.liveResult) return;
+  if (!dom.liveResult) return;
+  if (!state.liveResult) {
+    dom.liveResult.className = "live-result empty-state";
+    dom.liveResult.innerHTML = `
+      <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto;color:#94a3b8;" aria-hidden="true"><path d="M12 3v18M3 9l9-6 9 6M6 12l-3 7h6l-3-7zM18 12l-3 7h6l-3-7z"/></svg>
+      <strong>Ready for Calculation</strong>
+      <span>Enter reference load and turning-point observations, then click Calculate Pass/Fail.</span>
+    `;
+    return;
+  }
   const { row, check, env } = state.liveResult;
+  const isPass = row.result === "PASS";
   const rule = check.appliedRule;
   const ruleText = rule
-    ? `Rule ${rule.id}: Class ${rule.accuracyClass}, ${rule.minE}e to ${rule.maxE === Infinity ? "above" : `${rule.maxE}e`}, MPE = ${rule.multiplier}e`
-    : "No matching OIML tolerance rule found";
+    ? `OIML R76-1:2006 Rule ${rule.id} (Class ${rule.accuracyClass}, ${rule.minE}e &ndash; ${rule.maxE === Infinity ? "Max" : `${rule.maxE}e`}, MPE = &plusmn;${rule.multiplier}e)`
+    : "Standard OIML tolerance band";
+  const absError = Math.abs(check.calculatedError);
+  const mpe = check.allowedMpe;
+  const utilization = mpe > 0 ? Math.min(100, Math.round((absError / mpe) * 100)) : 0;
+  const marginRemaining = mpe > 0 ? Math.max(0, 100 - utilization) : 0;
+
+  dom.liveResult.className = "live-result";
   dom.liveResult.innerHTML = `
-    <strong class="${row.result === "PASS" ? "result-pass" : "result-fail"}">${row.result}</strong>
-    <span>${row.test_type} at ${row.reference_mass} ${row.unit}</span>
-    <p>Error = ${check.calculatedError.toFixed(3)} ${row.unit}; MPE = ${check.allowedMpe.toFixed(2)} ${row.unit}; therefore ${Math.abs(check.calculatedError) <= check.allowedMpe ? "the reading is inside the allowed limit" : "the reading exceeds the allowed limit"}.</p>
-    <p>${ruleText}</p>
-    <em>Environment: ${env.temperature} C, ${env.humidity}% RH, ${env.pressure} hPa</em>
+    <div class="live-result-head">
+      <span class="live-test-title">${escapeHtml(row.test_type)}</span>
+      <span class="live-verdict-pill ${isPass ? "pass" : "fail"}">
+        ${isPass ? "✓ PASS" : "✕ OUT OF TOLERANCE"}
+      </span>
+    </div>
+
+    <div class="live-calc-grid">
+      <div class="live-calc-tile">
+        <span>Reference Load (L)</span>
+        <strong>${row.reference_mass} <small style="font-size:0.75rem;font-weight:400;color:#64748b">${row.unit}</small></strong>
+      </div>
+      <div class="live-calc-tile">
+        <span>Indicated Reading (I)</span>
+        <strong>${row.indicated_value ?? row.reference_mass} <small style="font-size:0.75rem;font-weight:400;color:#64748b">${row.unit}</small></strong>
+      </div>
+      <div class="live-calc-tile">
+        <span>Calculated Error (E)</span>
+        <strong style="color:${isPass ? "var(--color-pass)" : "var(--color-fail)"}">${check.calculatedError >= 0 ? "+" : ""}${check.calculatedError.toFixed(3)} <small style="font-size:0.75rem;font-weight:400;color:#64748b">${row.unit}</small></strong>
+      </div>
+      <div class="live-calc-tile">
+        <span>Permissible MPE</span>
+        <strong>&plusmn;${mpe.toFixed(2)} <small style="font-size:0.75rem;font-weight:400;color:#64748b">${row.unit}</small></strong>
+      </div>
+    </div>
+
+    <div class="live-tolerance-gauge">
+      <div class="live-tolerance-meta">
+        <span>Tolerance Consumed: <strong>${utilization}%</strong></span>
+        <span>Margin Remaining: <strong>${marginRemaining}%</strong></span>
+      </div>
+      <div class="live-tolerance-track">
+        <div class="live-tolerance-fill ${isPass ? "pass" : "fail"}" style="width: ${Math.max(5, utilization)}%"></div>
+      </div>
+    </div>
+
+    <div class="live-rule-banner ${isPass ? "pass" : "fail"}">
+      ${ruleText} &bull; |E| &le; MPE (${absError.toFixed(3)} &le; ${mpe.toFixed(2)} ${row.unit})
+    </div>
+
+    <div class="live-env-stamp">
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>Lab: ${env.temperature}&deg;C &bull; ${env.humidity}% RH &bull; ${env.pressure} hPa</span>
+    </div>
   `;
 }
 

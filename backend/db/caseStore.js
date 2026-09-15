@@ -79,14 +79,31 @@ function contextFromRow(row) {
 }
 
 export async function createCaseStore() {
-  return process.env.DATABASE_URL ? createPostgresStore(process.env.DATABASE_URL) : createLocalStore();
+  if (process.env.DATABASE_URL) {
+    try {
+      const store = createPostgresStore(process.env.DATABASE_URL);
+      await store.initialize();
+      return store;
+    } catch (error) {
+      console.warn("PostgreSQL case store unavailable, falling back to local store:", error.message);
+    }
+  }
+  const localStore = createLocalStore();
+  await localStore.initialize();
+  return localStore;
 }
 
 function createPostgresStore(connectionString) {
-  const pool = new Pool({ connectionString, ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : undefined });
+  const pool = new Pool({
+    connectionString,
+    connectionTimeoutMillis: 2000,
+    ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : undefined,
+  });
   return {
     mode: "PostgreSQL",
-    async initialize() {},
+    async initialize() {
+      await pool.query("SELECT 1");
+    },
     async listApplicabilityRules() { return (await pool.query("SELECT * FROM test_applicability_rules ORDER BY id")).rows; },
     async listToleranceRules() { return (await pool.query("SELECT * FROM tolerance_rules ORDER BY accuracy_class, load_band_min_e")).rows; },
     async getEnvironmentalLimit(testType) { const result = await pool.query("SELECT * FROM environmental_limits WHERE test_type = $1", [testType]); return result.rows[0] ?? null; },

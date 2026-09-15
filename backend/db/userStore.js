@@ -42,11 +42,26 @@ export function normalizeRole(role) {
 }
 
 export async function createUserStore() {
-  return process.env.DATABASE_URL ? createPostgresStore(process.env.DATABASE_URL) : createLocalStore();
+  if (process.env.DATABASE_URL) {
+    try {
+      const store = await createPostgresStore(process.env.DATABASE_URL);
+      await store.initialize();
+      return store;
+    } catch (error) {
+      console.warn("PostgreSQL user store unavailable, falling back to local store:", error.message);
+    }
+  }
+  const localStore = await createLocalStore();
+  await localStore.initialize();
+  return localStore;
 }
 
 async function createPostgresStore(connectionString) {
-  const pool = new Pool({ connectionString, ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : undefined });
+  const pool = new Pool({
+    connectionString,
+    connectionTimeoutMillis: 2000,
+    ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : undefined,
+  });
   return {
     mode: "PostgreSQL",
     async initialize() {
